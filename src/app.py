@@ -13,7 +13,7 @@ from xxhash_cffi import xxh32_hexdigest
 import aiofiles
 
 from src.sanic_motor import BaseModel
-from src.models import Item, WebSite
+from src.models import Item, WebSite, Tag
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -32,7 +32,12 @@ async def get_url_title(url):
     async with aiohttp.ClientSession(loop=asyncio.get_event_loop()) as session:
         html_content = await fetch(session, url)
         soup = BeautifulSoup(html_content, 'lxml')
-        return soup.title.text
+        try:
+            title = soup.title.text
+        except AttributeError:
+            title = ''
+
+        return title
 
 
 async def get_unix_time():
@@ -68,11 +73,14 @@ BASE_UPLOAD_FOLDER = 'upload'
 async def index_page(request):
     return await file_stream('html/create.html')
 
+@App.route('/tags/')
+async def tags_page(request):
+    return await file_stream('html/tags.html')
+
 
 @App.route('/cards/')
 async def cards_page(request):
     return await file_stream('html/cards.html')
-
 
 
 async def fetch(session, url):
@@ -85,12 +93,14 @@ async def do_create_item(payload):
     itype = payload['type']
     url = payload['url']
     desc = payload['desc']
+    tags = payload['tags']
 
     result = await Item.insert_one({
         'name': name,
         'type': itype,
         'url': url,
         'desc': desc,
+        'tags': tags,
         'create_at': await get_unix_time()
     })
     return result
@@ -102,6 +112,11 @@ async def do_create_item_api(request):
     name = request.form.get('name', '')
     content = request.form.get('content')
     desc = request.form.get('desc', '')
+
+    try:
+        tags = request.form['tags']
+    except KeyError:
+        tags = []
 
     url = content if itype == 'website' else ''
     if url:
@@ -117,6 +132,7 @@ async def do_create_item_api(request):
             'desc': desc,
             'content': content,
             'url': url,
+            'tags': tags,
             'type': itype
         }
         await do_create_item(payload)
@@ -142,8 +158,42 @@ async def item_list_api(request):
             'url': obj['url'],
             'type': obj['type'],
             'name': obj['name'],
+            'tags': obj['tags'],
             'create_at': obj['create_at']
         }
         datalist.append(item)
 
     return json({'data': datalist, 'code': 0})
+
+
+@App.route('/api/tags/', methods=['GET'])
+async def tag_list_api(request):
+    qs = await Tag.find(
+        {}, sort='create_at desc'
+    )
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'type': obj['type'],
+            'name': obj['name']
+        }
+        datalist.append(item)
+
+    return json({'data': datalist, 'code': 0})
+
+
+@App.route('/api/tags/', methods=['POST'])
+async def do_create_tags_api(request):
+    itype = request.form.get('type')
+    name = request.form.get('name')
+
+    tag = await Tag.find_one({'type': itype, 'name': name})
+
+    if not tag:
+        tag = await Tag.insert_one({
+            'name': name,
+            'type': itype
+        })
+
+    return json({'message': '创建成功'})

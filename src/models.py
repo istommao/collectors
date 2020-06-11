@@ -15,3 +15,9 @@ class WebSite(BaseModel):
     __coll__ = 'WebSites'
     # name:str 名称
     # domain:str domain
+
+
+class Tag(BaseModel):
+    __coll__ = 'Tags'
+    # name:str 名称
+    # type:str 类型 website/app/goods
