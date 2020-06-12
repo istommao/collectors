@@ -48,6 +48,7 @@
         margin: 0;
         height: 120px;
         background: #DFE8FA;
+        overflow: hidden;
     }
 
     .CardBody {
@@ -83,8 +84,15 @@
         text-align: center;
         line-height: 120px;
     }
+
     .HeaderBackground img {
         border-radius: 4px 4px 0 0;
+    }
+
+    .topBreadcrumb {
+        width: 90%;
+        margin-top: 1em;
+        margin-left: 3em;
     }
     </style>
 </head>
@@ -97,6 +105,14 @@
     </ul>
     <a href="https://github.com/istommao/collectors" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
     </a>
+    <div class="topBreadcrumb">
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            Website: <span class="breadcrumb" id="WebsiteTagList" lay-separator="|">
+            </span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;App: <span class="breadcrumb" id="AppTagList" lay-separator="|">
+            </span>
+        </blockquote>
+    </div>
     <div id="CardListBox">
     </div>
     <script src="https://www.layuicdn.com/layui/layui.js" charset="utf-8"></script>
@@ -115,8 +131,15 @@
     var FileTypeList = ['video', 'audio', 'image'];
 
     layui.use('layer', function() {
-        var $ = layui.jquery;
+        var $ = layui.jquery,
+            element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块;
 
+        // //监听导航点击
+        // element.on('nav(demo)', function(elem) {
+        //     //console.log(elem)
+        //     layer.msg(elem.text());
+        // });
+        var baseURL = document.location.origin;
         $.get("/api/items/", function(resp) {
             var htmlContent = renderCardList(resp.data);
             $('#CardListBox').html(htmlContent);
@@ -130,6 +153,25 @@
             }
         }, ".CardBox");
 
+        function renderTagList() {
+            $.ajax({
+                url: baseURL + '/api/tags/',
+                type: 'get',
+                success: function(resp) {
+                    $.each(resp.data, function(key, obj) {
+                        var html = '<a href="#"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
+                        if (obj.type == 'website') {
+                            $('#WebsiteTagList').append(html);
+                        } else if (obj.type == 'app') {
+                            $('#AppTagList').append(html);
+                        }
+                    })
+
+                }
+            })
+        }
+        renderTagList();
+
         function renderCardList(dataset) {
             var htmlContent = '';
 
@@ -138,12 +180,12 @@
 
                 var header = '';
                 if (obj.type == 'website') {
-                    header = '<div class="HeaderBackground"><img width="100%" height="120px" src="https://codesnippet.top/media/snippet/default.jpg" /></div>'
+                    header = '<div class="HeaderBackground"><img width="100%" height="140px" src="https://imgkr.cn-bj.ufileos.com/ad12c5a7-6dbd-4305-950d-ab85ec3eed16.jpg" /></div>'
+
+                    // https://cdn.pixabay.com/photo/2015/05/31/10/58/golden-791072__480.jpg
 
                     // header = '<div class="HeaderBackground" style="border-radius: 4px;  background-position: center;background-size: cover;width:260px;height:120px;background:url(https://codesnippet.top/media/snippet/default.jpg)"></div>'
                 } else {
-
-
                     header = '<div class="HeaderBackground">' + obj.type + '</div>';
                 }
 
@@ -157,7 +199,7 @@
                     '<div class="CardHeader">' + header + '</div>' +
                     '<div class="CardBody"><h2>' + obj.name + '</h2><br>' +
                     '</div>' +
-                    '<div class="CardFooter">' + tagList + 
+                    '<div class="CardFooter">' + tagList +
                     '<a href="' + obj.url + '" target="_blank">查看</a></div>' +
                     '</div></div>'
 
