@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Filebed</title>
+    <title>Collectors</title>
     <link rel="stylesheet" type="text/css" href="/static/webuploader.css" />
     <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
     <link rel="stylesheet" type="text/css" href="/static/layui-theme.css" />
@@ -53,7 +53,7 @@
 
     .CardBody {
         padding: 0.5em;
-        height: 60px;
+        height: 70px;
         font-size: 14px;
     }
 
@@ -94,12 +94,16 @@
         margin-top: 1em;
         margin-left: 3em;
     }
+    .categoryBlock {
+        margin: 0 0 5px 0;
+    }
     </style>
 </head>
 
 <body>
     <ul class="layui-nav" lay-filter="">
         <li class="layui-nav-item"><a href="/">添加</a></li>
+        <li class="layui-nav-item"><a href="/category/">分类</a></li>
         <li class="layui-nav-item"><a href="/tags/">标签</a></li>
         <li class="layui-nav-item layui-this"><a href="/cards/">收藏列表</a></li>
     </ul>
@@ -160,9 +164,9 @@
                 success: function(resp) {
                     $.each(resp.data, function(key, obj) {
                         var html = '<a href="#"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
-                        if (obj.type == 'website') {
+                        if (obj.attribute == 'website') {
                             $('#WebsiteTagList').append(html);
-                        } else if (obj.type == 'app') {
+                        } else if (obj.attribute == 'app') {
                             $('#AppTagList').append(html);
                         }
                     })
@@ -179,25 +183,29 @@
                 var obj = dataset[key];
 
                 var header = '';
-                if (obj.type == 'website') {
-                    header = '<div class="HeaderBackground"><img width="100%" height="140px" src="https://imgkr.cn-bj.ufileos.com/ad12c5a7-6dbd-4305-950d-ab85ec3eed16.jpg" /></div>'
+                // if (obj.attribute == 'website') {
+                //     header = '<div class="HeaderBackground"><img width="100%" height="140px" src="https://imgkr.cn-bj.ufileos.com/ad12c5a7-6dbd-4305-950d-ab85ec3eed16.jpg" /></div>'
 
-                    // https://cdn.pixabay.com/photo/2015/05/31/10/58/golden-791072__480.jpg
+                //     // https://cdn.pixabay.com/photo/2015/05/31/10/58/golden-791072__480.jpg
 
-                    // header = '<div class="HeaderBackground" style="border-radius: 4px;  background-position: center;background-size: cover;width:260px;height:120px;background:url(https://codesnippet.top/media/snippet/default.jpg)"></div>'
-                } else {
-                    header = '<div class="HeaderBackground">' + obj.type + '</div>';
-                }
+                //     // header = '<div class="HeaderBackground" style="border-radius: 4px;  background-position: center;background-size: cover;width:260px;height:120px;background:url(https://codesnippet.top/media/snippet/default.jpg)"></div>'
+                // } else {
+                //     header = '<div class="HeaderBackground">' + obj.attribute + '</div>';
+                // }
+
+                header = '<div class="HeaderBackground"><img width="100%" height="140px" src="https://imgkr.cn-bj.ufileos.com/ad12c5a7-6dbd-4305-950d-ab85ec3eed16.jpg" /></div>'
 
                 var tagList = '';
                 $.each(obj.tags, function(key, value) {
                     tagList += '<span class="layui-badge layui-bg-blue">' + value + '</span>&nbsp;'
                 });
 
+                var categoryList = '<div class="categoryBlock"><span class="layui-badge-rim">' + obj.category + '</span></div>';
+
                 var item = '<div>' +
                     '<div class="CardBox">' +
                     '<div class="CardHeader">' + header + '</div>' +
-                    '<div class="CardBody"><h2>' + obj.name + '</h2><br>' +
+                    '<div class="CardBody">' + categoryList + '<h2>' + obj.name + '</h2><br>' +
                     '</div>' +
                     '<div class="CardFooter">' + tagList +
                     '<a href="' + obj.url + '" target="_blank">查看</a></div>' +

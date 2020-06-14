@@ -27,8 +27,8 @@
 <body>
     <ul class="layui-nav" lay-filter="">
         <li class="layui-nav-item"><a href="/">添加</a></li>
-        <li class="layui-nav-item"><a href="/category/">分类</a></li>
-        <li class="layui-nav-item layui-this"><a href="/tags/">标签</a></li>
+        <li class="layui-nav-item layui-this"><a href="/category/">分类</a></li>
+        <li class="layui-nav-item"><a href="/tags/">标签</a></li>
         <li class="layui-nav-item"><a href="/cards/">收藏列表</a></li>
     </ul>
     <a href="https://github.com/istommao/collectors" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
@@ -102,18 +102,16 @@
 
         function renderTagList() {
             $.ajax({
-                url: baseURL + '/api/tags/',
+                url: baseURL + '/api/category/',
                 type: 'get',
                 success: function(resp) {
                     $.each(resp.data, function(key, obj) {
-                        var html = '<span class="layui-badge layui-bg-blue">' + obj.name + '</span>&nbsp;'
-
                         if (obj.attribute == 'website') {
-                            $('#websiteBox').append(html)
+                            $('#websiteBox').append('<span class="layui-badge layui-bg-blue">' + obj.name + '</span>&nbsp;')
                         } else if (obj.attribute == 'app') {
-                            $('#appBox').append(html)
+                            $('#appBox').append('<span class="layui-badge layui-bg-blue">' + obj.name + '</span>&nbsp;')
                         } else {
-                            $('#goodsBox').append(html)
+                            $('#goodsBox').append('<span class="layui-badge layui-bg-blue">' + obj.name + '</span>&nbsp;')
                         }
 
                     })
@@ -127,7 +125,7 @@
             var form = $('#createForm');
 
             $.ajax({
-                url: baseURL + '/api/tags/',
+                url: baseURL + '/api/category/',
                 type: 'post',
                 data: form.serialize(),
                 async: false,
@@ -140,7 +138,7 @@
                     }
 
                     setTimeout(function() {
-                        window.location.href = baseURL + '/tags';
+                        window.location.href = baseURL + '/category';
                     }, 1500);
 
                 }

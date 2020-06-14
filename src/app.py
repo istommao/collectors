@@ -13,7 +13,7 @@ from xxhash_cffi import xxh32_hexdigest
 import aiofiles
 
 from src.sanic_motor import BaseModel
-from src.models import Item, WebSite, Tag
+from src.models import Item, WebSite, Tag, Category
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -78,6 +78,11 @@ async def tags_page(request):
     return await file_stream('html/tags.html')
 
 
+@App.route('/category/')
+async def tags_page(request):
+    return await file_stream('html/category.html')
+
+
 @App.route('/cards/')
 async def cards_page(request):
     return await file_stream('html/cards.html')
@@ -90,14 +95,14 @@ async def fetch(session, url):
 
 async def do_create_item(payload):
     name = payload['name']
-    itype = payload['type']
+    category = payload['category']
     url = payload['url']
     desc = payload['desc']
     tags = payload['tags']
 
     result = await Item.insert_one({
         'name': name,
-        'type': itype,
+        'category': category,
         'url': url,
         'desc': desc,
         'tags': tags,
@@ -108,7 +113,7 @@ async def do_create_item(payload):
 
 @App.route('/api/items/', methods=['POST'])
 async def do_create_item_api(request):
-    itype = request.form.get('type')
+    category = request.form.get('category')
     name = request.form.get('name', '')
     content = request.form.get('content')
     desc = request.form.get('desc', '')
@@ -118,10 +123,11 @@ async def do_create_item_api(request):
     except KeyError:
         tags = []
 
-    url = content if itype == 'website' else ''
-    if url:
-        name = await get_url_title(url)
-        desc = name
+    url = content
+    # url = content if category == 'website' else ''
+    # if url:
+    name = await get_url_title(url)
+    desc = name
 
     item = await Item.find_one({'content': content})
     if item:
@@ -133,7 +139,7 @@ async def do_create_item_api(request):
             'content': content,
             'url': url,
             'tags': tags,
-            'type': itype
+            'category': category
         }
         await do_create_item(payload)
 
@@ -156,7 +162,7 @@ async def item_list_api(request):
     for obj in qs.objects:
         item = {
             'url': obj['url'],
-            'type': obj['type'],
+            'category': obj['category'],
             'name': obj['name'],
             'tags': obj['tags'],
             'create_at': obj['create_at']
@@ -164,6 +170,37 @@ async def item_list_api(request):
         datalist.append(item)
 
     return json({'data': datalist, 'code': 0})
+
+
+@App.route('/api/category/', methods=['GET'])
+async def category_list_api(request):
+    qs = await Category.find({})
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'attribute': obj['attribute'],
+            'name': obj['name']
+        }
+        datalist.append(item)
+
+    return json({'data': datalist, 'code': 0})
+
+
+@App.route('/api/category/', methods=['POST'])
+async def do_create_category_api(request):
+    attribute = request.form.get('attribute')
+    name = request.form.get('name')
+
+    tag = await Category.find_one({'attribute': attribute, 'name': name})
+
+    if not tag:
+        tag = await Category.insert_one({
+            'name': name,
+            'attribute': attribute
+        })
+
+    return json({'message': '创建成功'})
 
 
 @App.route('/api/tags/', methods=['GET'])
@@ -175,7 +212,7 @@ async def tag_list_api(request):
 
     for obj in qs.objects:
         item = {
-            'type': obj['type'],
+            'attribute': obj['attribute'],
             'name': obj['name']
         }
         datalist.append(item)
@@ -185,15 +222,15 @@ async def tag_list_api(request):
 
 @App.route('/api/tags/', methods=['POST'])
 async def do_create_tags_api(request):
-    itype = request.form.get('type')
+    attribute = request.form.get('attribute')
     name = request.form.get('name')
 
-    tag = await Tag.find_one({'type': itype, 'name': name})
+    tag = await Tag.find_one({'attribute': attribute, 'name': name})
 
     if not tag:
         tag = await Tag.insert_one({
             'name': name,
-            'type': itype
+            'attribute': attribute
         })
 
     return json({'message': '创建成功'})

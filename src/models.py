@@ -1,10 +1,16 @@
 from .sanic_motor import BaseModel
 
 
+class Category(BaseModel):
+    __coll__ = 'Categorys'
+    # name:str 名称
+    # attribute:str 属性 website/app/goods
+
+
 class Item(BaseModel):
     __coll__ = 'Items'
     # name:str 名称
-    # type:str 类型
+    # category:str 分类
     # desc:str 内容描述
     # url:str 链接
     # tags:list<str> 标签
@@ -20,4 +26,4 @@ class WebSite(BaseModel):
 class Tag(BaseModel):
     __coll__ = 'Tags'
     # name:str 名称
-    # type:str 类型 website/app/goods
+    # attribute:str 类型 website/app/goods
