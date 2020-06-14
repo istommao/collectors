@@ -14,6 +14,7 @@ import aiofiles
 
 from src.sanic_motor import BaseModel
 from src.models import Item, WebSite, Tag, Category
+from src.auth import user_authorized
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -69,16 +70,31 @@ App.static('/upload', BASE_DIR + '/upload')
 BASE_UPLOAD_FOLDER = 'upload'
 
 
+
 @App.route('/')
+async def cards_page(request):
+    return await file_stream('html/cards.html')
+
+
+@App.route('/create')
+@user_authorized()
 async def index_page(request):
     return await file_stream('html/create.html')
 
+
+@App.route('/login/')
+async def tags_page(request):
+    return await file_stream('html/login.html')
+
+
 @App.route('/tags/')
+@user_authorized()
 async def tags_page(request):
     return await file_stream('html/tags.html')
 
 
 @App.route('/category/')
+@user_authorized()
 async def tags_page(request):
     return await file_stream('html/category.html')
 
@@ -234,3 +250,17 @@ async def do_create_tags_api(request):
         })
 
     return json({'message': '创建成功'})
+
+
+
+@App.route('/api/user/login/', methods=['POST'])
+async def login_api(request):
+    uid = 'collectors'
+    response = json({'message': '登录成功', 'code': 200})
+    response.cookies['sessionid'] = uid
+    response.cookies['sessionid']['domain'] = '*'
+    response.cookies['sessionid']['httponly'] = True
+
+    return response
+
+    
