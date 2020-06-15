@@ -110,6 +110,7 @@
         bottom: 0;
         width: auto;
         padding: 0 1em;
+        background-color: white;
         box-shadow: 0 2px 3px 0 rgba(7, 17, 27, 0.1);
         border: 1px solid #e4ecf3;
         border-radius: 4px;
@@ -192,7 +193,7 @@
                 jump: function(obj, first) {
                     var url = basePath + '?page_size=' + obj.limit + '&page=' + obj.curr
                     if (!first) {
-                        window.location.href = url;    
+                        window.location.href = url;
                     }
                 }
             });
