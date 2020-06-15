@@ -25,6 +25,7 @@
         width: 95%;
         overflow: auto;
         margin: 0 auto;
+        margin-bottom: 70px;
     }
 
     .CardBox {
@@ -98,6 +99,22 @@
     .categoryBlock {
         margin: 0 0 5px 0;
     }
+
+    .footer {
+        width: 980px;
+        margin: 0 auto;
+        overflow: auto;
+    }
+
+    #PageBlock {
+        bottom: 0;
+        width: auto;
+        padding: 0 1em;
+        box-shadow: 0 2px 3px 0 rgba(7, 17, 27, 0.1);
+        border: 1px solid #e4ecf3;
+        border-radius: 4px;
+        position: fixed;
+    }
     </style>
 </head>
 
@@ -112,13 +129,16 @@
     </a>
     <div class="topBreadcrumb">
         <blockquote class="layui-elem-quote layui-quote-nm">
-            Website: <span class="breadcrumb" id="WebsiteTagList" lay-separator="|">
+            Website: <span class="breadcrumb" id="WebsiteCategoryList" lay-separator="|">
             </span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;App: <span class="breadcrumb" id="AppTagList" lay-separator="|">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;App: <span class="breadcrumb" id="AppCategoryList" lay-separator="|">
             </span>
         </blockquote>
     </div>
     <div id="CardListBox">
+    </div>
+    <div class="footer">
+        <div id="PageBlock"></div>
     </div>
     <script src="https://www.layuicdn.com/layui/layui.js" charset="utf-8"></script>
     <script>
@@ -132,11 +152,17 @@
 
         return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + sizes[i];
     }
+    var basePath = location.protocol + '//' + location.host + location.pathname;
 
-    var FileTypeList = ['video', 'audio', 'image'];
+    var urlParams = new URLSearchParams(window.location.search);
+    var category = urlParams.get('category') || '';
 
-    layui.use('layer', function() {
+    var page = urlParams.get('page') || '1';
+    var page_size = urlParams.get('page_size') || '20';
+
+    layui.use(['layer', 'laypage'], function() {
         var $ = layui.jquery,
+            laypage = layui.laypage,
             element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块;
 
         // //监听导航点击
@@ -145,10 +171,34 @@
         //     layer.msg(elem.text());
         // });
         var baseURL = document.location.origin;
-        $.get("/api/items/", function(resp) {
+
+        var apiURL = '/api/items/?page_size=' + page_size + '&page=' + page + '&category=' + category;
+        $.get(apiURL, function(resp) {
             var htmlContent = renderCardList(resp.data);
             $('#CardListBox').html(htmlContent);
         });
+
+        var pageAPIURL = '/api/items/pagedata/?page_size=' + page_size + '&page=' + page
+        $.get(pageAPIURL, function(resp) {
+            var pagedata = resp.data;
+
+            //完整功能
+            laypage.render({
+                elem: 'PageBlock',
+                count: pagedata.total,
+                curr: pagedata.page,
+                limit: pagedata.page_size,
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                jump: function(obj, first) {
+                    var url = basePath + '?page_size=' + obj.limit + '&page=' + obj.curr
+                    if (!first) {
+                        window.location.href = url;    
+                    }
+                }
+            });
+
+        });
+
         $('#CardListBox').on({
             mouseenter: function() {
                 $(this).addClass('activeBox');
@@ -158,24 +208,43 @@
             }
         }, ".CardBox");
 
-        function renderTagList() {
+        function renderCategoryList() {
             $.ajax({
-                url: baseURL + '/api/tags/',
+                url: baseURL + '/api/category/',
                 type: 'get',
                 success: function(resp) {
                     $.each(resp.data, function(key, obj) {
-                        var html = '<a href="#"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
+                        var url = basePath + '?category=' + obj.name;
+                        var html = '<a href="' + url + '"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
                         if (obj.attribute == 'website') {
-                            $('#WebsiteTagList').append(html);
+                            $('#WebsiteCategoryList').append(html);
                         } else if (obj.attribute == 'app') {
-                            $('#AppTagList').append(html);
+                            $('#AppCategoryList').append(html);
                         }
-                    })
-
+                    });
                 }
-            })
+            });
         }
-        renderTagList();
+        renderCategoryList();
+
+        // function renderTagList() {
+        //     $.ajax({
+        //         url: baseURL + '/api/tags/',
+        //         type: 'get',
+        //         success: function(resp) {
+        //             $.each(resp.data, function(key, obj) {
+        //                 var html = '<a href="#"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
+        //                 if (obj.attribute == 'website') {
+        //                     $('#WebsiteTagList').append(html);
+        //                 } else if (obj.attribute == 'app') {
+        //                     $('#AppTagList').append(html);
+        //                 }
+        //             })
+
+        //         }
+        //     })
+        // }
+        // renderTagList();
 
         function renderCardList(dataset) {
             var htmlContent = '';

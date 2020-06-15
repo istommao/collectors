@@ -104,11 +104,61 @@ async def do_create_item_api(request):
         return json({'message': '创建成功'})
 
 
+def get_page_size(args):
+    page_size = args.get('page_size', '20')
+    try:
+        page_size = int(page_size)
+    except ValueError:
+        page_size = 20
+    return page_size
+
+
+def get_current_page(args):
+    current_page =  args.get('page', '1')
+    try:
+        current_page = int(current_page)
+    except ValueError:
+        current_page = 1
+    return current_page
+
+
+async def get_item_page_data(request):
+    current_page = get_current_page(request.args)
+    page_size = get_page_size(request.args)
+
+    total_page = await Item.count({})
+    pagedata = {
+        'total': total_page,
+        'page': current_page,
+        'page_size': page_size
+    }
+
+    return pagedata
+
+
+@COMMON_API.route('/items/pagedata/')
+async def item_pagedata_api(request):
+    pagedata = await get_item_page_data(request)
+
+    return json({'data': pagedata})
+
+
 @COMMON_API.route('/items/')
 async def item_list_api(request):
+    current_page = get_current_page(request.args)
+    page_size = get_page_size(request.args)
+
+    category = request.args.get('category')
+    if category:
+        query_condition = {'category': category}
+    else:
+        query_condition = {}
+
     qs = await Item.find(
-        {}, sort='create_at desc'
+        query_condition, sort='create_at desc',
+        page=current_page, per_page=page_size
     )
+
     datalist = []
 
     for obj in qs.objects:
