@@ -4,7 +4,8 @@ from sanic.response import redirect
 
 
 async def check_request_for_authorization_status(request):
-    # setattr(request, 'user', user)
+    return True
+
     sessionid = request.cookies.get('sessionid')
     if not sessionid:
         return False
@@ -12,7 +13,6 @@ async def check_request_for_authorization_status(request):
     # with await request.app.redis as r:
     #     if await r.exists(sessionid):
     #         return True
-    return True
 
     return False
 
