@@ -1,8 +1,4 @@
 import os
-import time
-
-from urllib.parse import urlparse
-
 
 from sanic import Sanic
 from sanic.response import file_stream

@@ -1,3 +1,6 @@
+import time
+from urllib.parse import urlparse
+
 from sanic import Blueprint
 from sanic.response import json
 
