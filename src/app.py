@@ -15,7 +15,7 @@ MONGODB_URI = os.environ.get('MONGODB_HOST', 'mongodb://127.0.01:27017/collector
 BASE_URL = 'http://127.0.0.1:7000'
 
 
-App = Sanic('filebed')
+App = Sanic('collectors')
 App.blueprint(COMMON_API)
 
 App.config.update(

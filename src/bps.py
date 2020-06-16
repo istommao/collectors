@@ -1,3 +1,4 @@
+import os
 import time
 from urllib.parse import urlparse
 
@@ -6,10 +7,13 @@ from sanic.response import json
 
 import aiohttp
 import asyncio
+import aiofiles
+
+from xxhash_cffi import xxh32_hexdigest
 
 from bs4 import BeautifulSoup
 
-from src.models import Item, WebSite, Tag, Category
+from src.models import Item, WebSite, Tag, Category, ItemImage
 
 
 COMMON_API = Blueprint('CommonAPI', url_prefix='/api')
@@ -251,3 +255,40 @@ async def login_api(request):
     response.cookies['sessionid']['httponly'] = True
 
     return response
+
+
+async def write_file(path, body):
+
+    async with aiofiles.open(path, 'wb') as f:
+        await f.write(body)
+    f.close()
+
+
+BASE_UPLOAD_FOLDER = 'upload'
+
+
+@COMMON_API.route('/upload', methods=['POST'])
+async def upload_api(request):
+    upload_file = request.files.get('file')
+    name = request.form.get('name')
+
+    folder_path = '{}/{}'.format(
+        BASE_UPLOAD_FOLDER,
+        str(int(time.time()))
+    )
+
+    file_ext = 'jpg'
+    file_path = '{}/{}'.format(folder_path, xxh32_hexdigest(name).decode('utf-8') + '.{}'.format(file_ext))
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    await write_file(file_path, upload_file.body)
+
+    result = await ItemImage.insert_one({
+        'name': name,
+        'path': file_path,
+        'create_at': await get_unix_time(),
+    })
+
+    return json(True)

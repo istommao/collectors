@@ -1,3 +1,4 @@
 sanic
 xxhash_cffi
 motor
+aiohttp

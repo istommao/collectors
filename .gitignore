@@ -92,3 +92,7 @@ ENV/
 
 
 .DS_Store
+
+upload/*
+
+!.gitkeep

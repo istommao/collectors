@@ -27,3 +27,10 @@ class Tag(BaseModel):
     __coll__ = 'Tags'
     # name:str 名称
     # attribute:str 类型 website/app/goods
+
+
+class ItemImage(BaseModel):
+    __coll__ = 'ItemImages'
+    # name:str 名称
+    # path: path
+    # create_at:int Unix时间戳
