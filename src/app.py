@@ -67,3 +67,8 @@ async def tags_page(request):
 @App.route('/cards/')
 async def cards_page(request):
     return await file_stream('html/cards.html')
+
+
+@App.route('/onepage/')
+async def cards_page(request):
+    return await file_stream('html/onepage.html')
