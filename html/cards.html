@@ -249,14 +249,19 @@
 
         function renderCardList(dataset) {
             var htmlContent = '';
+            var defaultImage = 'https://imgkr.cn-bj.ufileos.com/f316df73-7519-4334-a2ce-68162638b833.jpg'
 
             $.each(dataset, function(key, val) {
                 var obj = dataset[key];
 
                 var header = '';
                 // https://imgkr.cn-bj.ufileos.com/ad12c5a7-6dbd-4305-950d-ab85ec3eed16.jpg
+                var bgImage = defaultImage;
+                if ( obj.image ) {
+                    bgImage = obj.image;
+                }
 
-                header = '<div class="HeaderBackground"><img width="100%" height="160px" src="https://imgkr.cn-bj.ufileos.com/f316df73-7519-4334-a2ce-68162638b833.jpg" /></div>'
+                header = '<div class="HeaderBackground"><img width="100%" height="160px" src="' + bgImage + '" /></div>'
 
                 var tagList = '';
                 $.each(obj.tags, function(key, value) {

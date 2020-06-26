@@ -12,6 +12,7 @@ class Item(BaseModel):
     # name:str 名称
     # category:str 分类
     # desc:str 内容描述
+    # image:str 封面图片
     # url:str 链接
     # tags:list<str> 标签
     # create_at:int Unix时间戳

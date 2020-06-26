@@ -58,6 +58,7 @@ async def do_create_item(payload):
     url = payload['url']
     desc = payload['desc']
     tags = payload['tags']
+    image = payload['image']
 
     result = await Item.insert_one({
         'name': name,
@@ -65,6 +66,7 @@ async def do_create_item(payload):
         'url': url,
         'desc': desc,
         'tags': tags,
+        'image': image,
         'create_at': await get_unix_time()
     })
     return result
@@ -76,6 +78,7 @@ async def do_create_item_api(request):
     name = request.form.get('name', '')
     content = request.form.get('content')
     desc = request.form.get('desc', '')
+    image = request.form.get('image', '')
 
     try:
         tags = request.form['tags']
@@ -98,7 +101,8 @@ async def do_create_item_api(request):
             'content': content,
             'url': url,
             'tags': tags,
-            'category': category
+            'category': category,
+            'image': image
         }
         await do_create_item(payload)
 
@@ -173,6 +177,7 @@ async def item_list_api(request):
             'url': obj['url'],
             'category': obj['category'],
             'name': obj['name'],
+            'image': obj['image'],
             'tags': obj['tags'],
             'create_at': obj['create_at']
         }
@@ -270,7 +275,7 @@ BASE_UPLOAD_FOLDER = 'upload'
 @COMMON_API.route('/upload', methods=['POST'])
 async def upload_api(request):
     upload_file = request.files.get('file')
-    name = request.form.get('name')
+    name = upload_file.name
 
     folder_path = '{}/{}'.format(
         BASE_UPLOAD_FOLDER,
@@ -291,4 +296,4 @@ async def upload_api(request):
         'create_at': await get_unix_time(),
     })
 
-    return json(True)
+    return json({'url': '/' + file_path})
