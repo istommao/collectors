@@ -5,6 +5,8 @@ from urllib.parse import urlparse
 from sanic import Blueprint
 from sanic.response import json
 
+from bson.objectid import ObjectId
+
 import aiohttp
 import asyncio
 import aiofiles
@@ -174,6 +176,7 @@ async def item_list_api(request):
 
     for obj in qs.objects:
         item = {
+            'uid': str(obj['_id']),
             'url': obj['url'],
             'category': obj['category'],
             'name': obj['name'],
@@ -297,3 +300,41 @@ async def upload_api(request):
     })
 
     return json({'url': '/' + file_path})
+
+
+
+@COMMON_API.route('/items/<uid:string>/', methods=['GET'])
+async def item_detail_api(request, uid):
+
+    obj = await Item.find_one(
+        {'_id': ObjectId(uid)}
+    )
+
+    item = {
+        'uid': str(obj['_id']),
+        'url': obj['url'],
+        'category': obj['category'],
+        'name': obj['name'],
+        'image': obj['image'],
+        'tags': obj['tags'],
+        'create_at': obj['create_at']
+    }
+
+    return json({'data': item, 'code': 0})
+
+
+@COMMON_API.route('/items/<uid:string>/', methods=['POST'])
+async def do_update_item_api(request, uid):
+    image = request.form.get('image', '')
+    image = request.form.get('image', '')
+
+    item = await Item.find_one({'_id': ObjectId(uid)})
+    if not item:
+        return json({'message': '不存在的记录'}) 
+    else:
+        payload = {
+            'image': image
+        }
+        await Item.update_one({'_id': ObjectId(uid)}, {'$set': payload})
+
+        return json({'message': '修改成功'})
