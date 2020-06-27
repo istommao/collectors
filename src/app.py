@@ -41,7 +41,7 @@ async def cards_page(request):
     return await file_stream('html/cards.html')
 
 
-@App.route('/create')
+@App.route('/account/create')
 @user_authorized()
 async def index_page(request):
     return await file_stream('html/create.html')
@@ -52,13 +52,13 @@ async def tags_page(request):
     return await file_stream('html/login.html')
 
 
-@App.route('/tags/')
+@App.route('/account/tags/')
 @user_authorized()
 async def tags_page(request):
     return await file_stream('html/tags.html')
 
 
-@App.route('/category/')
+@App.route('/account/category/')
 @user_authorized()
 async def tags_page(request):
     return await file_stream('html/category.html')
@@ -74,7 +74,7 @@ async def cards_page(request):
     return await file_stream('html/cards.html')
 
 
-@App.route('/list/')
+@App.route('/account/list/')
 async def list_page(request):
     return await file_stream('html/list.html')
 
