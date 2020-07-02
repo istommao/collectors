@@ -41,6 +41,16 @@ async def cards_page(request):
     return await file_stream('html/index.html')
 
 
+@App.route('/onepage/programmer/')
+async def programmer_page(request):
+    return await file_stream('html/programmer.html')
+
+
+@App.route('/onepage/designer/')
+async def designer_page(request):
+    return await file_stream('html/designer.html')
+
+
 @App.route('/account/create')
 @user_authorized()
 async def index_page(request):
