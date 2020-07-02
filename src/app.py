@@ -38,7 +38,7 @@ BASE_UPLOAD_FOLDER = 'upload'
 
 @App.route('/')
 async def cards_page(request):
-    return await file_stream('html/cards.html')
+    return await file_stream('html/index.html')
 
 
 @App.route('/account/create')
