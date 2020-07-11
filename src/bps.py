@@ -2,6 +2,9 @@ import os
 import time
 from urllib.parse import urlparse
 
+import itertools
+import operator
+
 from sanic import Blueprint
 from sanic.response import json
 
@@ -15,7 +18,7 @@ from xxhash_cffi import xxh32_hexdigest
 
 from bs4 import BeautifulSoup
 
-from src.models import Item, WebSite, Tag, Category, ItemImage
+from src.models import Item, WebSite, Tag, Category, ItemImage, SiteItem, SiteCategory
 
 
 COMMON_API = Blueprint('CommonAPI', url_prefix='/api')
@@ -338,3 +341,145 @@ async def do_update_item_api(request, uid):
         await Item.update_one({'_id': ObjectId(uid)}, {'$set': payload})
 
         return json({'message': '修改成功'})
+
+
+async def do_create_siteitem(payload):
+    name = payload['name']
+    link = payload['link']
+    desc = payload['desc']
+    image = payload['image']
+    category = payload['category']
+
+    result = await SiteItem.insert_one({
+        'name': name,
+        'link': link,
+        'desc': desc,
+        'category': category,
+        'image': image
+    })
+    return result
+
+
+@COMMON_API.route('/onepage/', methods=['GET'])
+async def get_onepage_list_api(request):
+
+    qs = await SiteItem.find({})
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'name': obj['name'],
+            'link': obj['link'],
+            'category': obj['category'],
+            'image': obj['image'],
+            'desc': obj['desc'],
+        }
+        datalist.append(item)
+
+    datalist = itertools.groupby(
+        sorted(datalist, key=operator.itemgetter('category')),
+        key=operator.itemgetter('category')
+    )
+    datalist = [{'name': key, 'datalist': list(group)} for key, group in datalist if key]
+
+    total_count = await SiteItem.count({})
+    total_category = await SiteCategory.count({})
+
+    return json({'datalist': datalist, 'code': 0,
+                 'total_count': total_count, 'total_category': total_category})
+
+
+@COMMON_API.route('/onepage/', methods=['POST'])
+async def do_create_onepage_api(request):
+    name = request.form.get('name', '')
+    category = request.form.get('category', '')
+    link = request.form.get('link')
+    desc = request.form.get('desc', '')
+    image = request.form.get('image', '')
+
+    item = await SiteItem.find_one({'link': link})
+    if item:
+        return json({'message': '已创建'}) 
+    else:
+        payload = {
+            'name': name,
+            'desc': desc,
+            'link': link,
+            'category': category,
+            'image': image
+        }
+        await do_create_siteitem(payload)
+
+        domain = get_domain_by_url(link)
+        site = await WebSite.find_one({'domain': domain})
+        if not site:
+            await WebSite.insert_one({'name': domain, 'domain': domain})
+
+        return json({'message': '创建成功'})
+
+
+
+@COMMON_API.route('/onepage/all/', methods=['GET'])
+async def all_onepage_api(request):
+    qs = await SiteItem.find({})
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'name': obj['name'],
+            'link': obj['link'],
+            'image': obj['image'],
+            'desc': obj['desc'],
+        }
+        datalist.append(item)
+
+    return json({'datalist': datalist, 'code': 0})
+
+
+async def do_create_site_category(payload):
+    name = payload['name']
+    desc = payload['desc']
+    image = payload['image']
+
+    result = await SiteCategory.insert_one({
+        'name': name,
+        'desc': desc,
+        'image': image
+    })
+    return result
+
+
+@COMMON_API.route('/onepage/category/', methods=['POST'])
+async def do_create_onepage_api(request):
+    name = request.form.get('name', '')
+    desc = request.form.get('desc', '')
+    image = request.form.get('image', '')
+
+    item = await SiteCategory.find_one({'name': name})
+    if item:
+        return json({'message': '已创建'}) 
+    else:
+        payload = {
+            'name': name,
+            'desc': desc,
+            'image': image
+        }
+        await do_create_site_category(payload)
+
+        return json({'message': '创建成功'})
+
+
+@COMMON_API.route('/onepage/category/', methods=['GET'])
+async def site_category_api(request):
+    qs = await SiteCategory.find({})
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'name': obj['name'],
+            'image': obj['image'],
+            'desc': obj['desc'],
+        }
+        datalist.append(item)
+
+    return json({'datalist': datalist, 'code': 0})

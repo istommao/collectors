@@ -35,3 +35,19 @@ class ItemImage(BaseModel):
     # name:str 名称
     # path: path
     # create_at:int Unix时间戳
+
+
+class SiteItem(BaseModel):
+    __coll__ = 'SietItems'
+    # name:str 名称
+    # category:str 名称
+    # link: 链接
+    # desc:str 内容描述
+    # image:str 封面图片
+
+
+class SiteCategory(BaseModel):
+    __coll__ = 'SiteCategorys'
+    # name:str 名称
+    # image:str 封面图片
+    # desc:str 内容描述

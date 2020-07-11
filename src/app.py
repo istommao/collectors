@@ -41,6 +41,11 @@ async def cards_page(request):
     return await file_stream('html/index.html')
 
 
+@App.route('/onepage/create/')
+async def programmer_page(request):
+    return await file_stream('html/onepage/create.html')
+
+
 @App.route('/onepage/programmer/')
 async def programmer_page(request):
     return await file_stream('html/programmer.html')
@@ -90,5 +95,25 @@ async def list_page(request):
 
 
 @App.route('/onepage/')
-async def cards_page(request):
-    return await file_stream('html/onepage.html')
+async def programmer_page(request):
+    return await file_stream('html/onepage/index.html')
+
+
+@App.route('/onepage/all/')
+async def programmer_page(request):
+    return await file_stream('html/onepage/all.html')
+
+
+@App.route('/onepage/demo/')
+async def programmer_page(request):
+    return await file_stream('html/onepage/demo.html')
+
+
+@App.route('/onepage/edit/')
+async def programmer_page(request):
+    return await file_stream('html/onepage/edit.html')
+
+
+@App.route('/onepage/category/')
+async def programmer_page(request):
+    return await file_stream('html/onepage/category.html')

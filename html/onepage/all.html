@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>OnePage</title>
+    <style>
+    body {
+        background: #fbfbfb;
+    }
+
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, Source Sans Pro, BlinkMacSystemFont, PingFang SC, Helvetica, Tahoma, Arial, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #303659;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+        width: 100%;
+        min-width: 1200px;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    .wrapper .menu {
+        height: 70px;
+        width: 100%;
+        margin: 0 auto;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        z-index: 199;
+    }
+
+    .page {
+        background: #fbfbfb;
+        padding: 20px 0 150px;
+    }
+
+    .page .container {
+        width: 980px;
+        margin: auto;
+    }
+
+    .page .container h1 {
+        font-size: 30px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .page .container .description {
+        text-align: center;
+    }
+
+    .page .container .sector {
+        /*margin: 20px 0;*/
+    }
+
+    .page .container h2 {
+        font-size: 16px;
+        text-align: left;
+        margin: 10px 0 20px;
+        /*padding-top: 20px;*/
+        font-weight: 700;
+    }
+
+    .page .container .links {
+        display: -webkit-box;
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+    }
+
+    .page .container .links .link {
+        width: 310px;
+        background: #fff;
+        display: -webkit-box;
+        display: flex;
+        box-shadow: 0 1px 5px rgba(180, 195, 255, .3);
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        -webkit-box-align: center;
+        align-items: center;
+        padding: 15px 10px;
+        margin-bottom: 20px;
+        border-radius: 2px;
+        border: 1px solid transparent;
+    }
+
+    .page .container .links .link img {
+        width: 30px;
+        height: 30px;
+        -o-object-fit: contain;
+        object-fit: contain;
+        margin-right: 10px;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+    }
+
+    .page .container .links .link .info {
+        width: 230px;
+    }
+
+    .page .container .links a:hover {
+        border: 1px solid #20A0FF;
+    }
+
+    .page .container h3 {
+        font-size: 14px;
+    }
+
+    .page .container .links .link .info p {
+        font-size: 12px;
+        color: #888ea2;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 100%;
+        display: block;
+        text-align: left;
+        line-height: 1.8;
+    }
+
+    a {
+        cursor: pointer;
+        outline: none;
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+    }
+
+    a,
+    a:hover,
+    a:visited {
+        text-decoration: none;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="menu"></div>
+        <div class="page">
+            <div class="container">
+                <h1>OnePage · 导航</h1>
+                <p class="description">共收录 16 个分类， 119 个站点</p>
+                <div class="sectors">
+                    <div class="sector">
+                        <h2>全分类 · 12 个</h2>
+                        <div class="links" id="CardList">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://www.layuicdn.com/layui/layui.js" charset="utf-8"></script>
+    <script>
+    layui.use(['form', 'layedit', 'laydate', 'upload'], function() {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            upload = layui.upload,
+            $ = layui.jquery;
+
+        var baseURL = document.location.origin;
+
+        function doRenderList(datalist) {
+            var htmlContent = '';
+
+            $.each(datalist, function(key, val) {
+                var item = datalist[key];
+
+                htmlContent += '<a href="' + item.link + '" target="_blank" class="link">' +
+                    '<img src="' + item.image + '" alt="' + item.name + '">' +
+                    '<div class="info"><h3>' + item.name + '</h3>' +
+                    '<p>' + item.desc + '</p></div></a>'
+            })
+
+            $('#CardList').html(htmlContent);
+        }
+
+        function doLoadListAPI(data) {
+
+            $.ajax({
+                url: baseURL + '/api/onepage/all/',
+                type: 'get',
+                success: function(resp) {
+                    doRenderList(resp.datalist)
+
+                }
+            })
+        }
+        doLoadListAPI();
+
+    });
+    </script>
+</body>
+
+</html>
