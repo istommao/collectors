@@ -117,3 +117,8 @@ async def programmer_page(request):
 @App.route('/onepage/category/')
 async def programmer_page(request):
     return await file_stream('html/onepage/category.html')
+
+
+@App.route('/onepage/detail/')
+async def programmer_page(request):
+    return await file_stream('html/onepage/detail.html')

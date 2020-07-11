@@ -362,8 +362,12 @@ async def do_create_siteitem(payload):
 
 @COMMON_API.route('/onepage/', methods=['GET'])
 async def get_onepage_list_api(request):
+    category = request.args.get('category', '')
+    query_condition = {}
+    if category:
+        query_condition = {'category': category}
 
-    qs = await SiteItem.find({})
+    qs = await SiteItem.find(query_condition)
     datalist = []
 
     for obj in qs.objects:
