@@ -38,6 +38,12 @@ BASE_UPLOAD_FOLDER = 'upload'
 
 @App.route('/')
 async def cards_page(request):
+    return await file_stream('html/onepage/home.html')
+
+
+
+@App.route('/old/home/')
+async def cards_page(request):
     return await file_stream('html/index.html')
 
 
