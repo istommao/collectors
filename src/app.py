@@ -101,30 +101,40 @@ async def list_page(request):
 
 
 @App.route('/onepage/')
-async def programmer_page(request):
+async def onepage_page(request):
     return await file_stream('html/onepage/index.html')
 
 
 @App.route('/onepage/all/')
-async def programmer_page(request):
+async def onepage_all_page(request):
     return await file_stream('html/onepage/all.html')
 
 
 @App.route('/onepage/demo/')
-async def programmer_page(request):
+async def onepage_demo_page(request):
     return await file_stream('html/onepage/demo.html')
 
 
 @App.route('/onepage/edit/')
-async def programmer_page(request):
+async def onepage_edit_page(request):
     return await file_stream('html/onepage/edit.html')
 
 
 @App.route('/onepage/category/')
-async def programmer_page(request):
+async def onepage_category_page(request):
     return await file_stream('html/onepage/category.html')
 
 
 @App.route('/onepage/detail/')
-async def programmer_page(request):
+async def onepage_detail_page(request):
     return await file_stream('html/onepage/detail.html')
+
+
+@App.route('/domainsite/')
+async def domainsite_page(request):
+    return await file_stream('html/domainsite/index.html')
+
+
+@App.route('/domainsite/create/')
+async def domainsite_create_page(request):
+    return await file_stream('html/domainsite/create.html')

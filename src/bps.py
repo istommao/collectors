@@ -18,7 +18,10 @@ from xxhash_cffi import xxh32_hexdigest
 
 from bs4 import BeautifulSoup
 
-from src.models import Item, WebSite, Tag, Category, ItemImage, SiteItem, SiteCategory
+from src.models import (
+    Item, WebSite, Tag, Category, ItemImage, SiteItem, SiteCategory,
+    DomainSite
+)
 
 
 COMMON_API = Blueprint('CommonAPI', url_prefix='/api')
@@ -487,3 +490,82 @@ async def site_category_api(request):
         datalist.append(item)
 
     return json({'datalist': datalist, 'code': 0})
+
+
+@COMMON_API.route('/domainsite/', methods=['GET'])
+async def get_domainsite_list_api(request):
+    name = request.args.get('name', '')
+    query_condition = {'domain': name}
+
+    qs = await DomainSite.find(query_condition)
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'name': obj['name'],
+            'link': obj['link'],
+            'category': obj['category'],
+            'image': obj['image'],
+            'desc': obj['desc'],
+        }
+        datalist.append(item)
+
+    datalist = itertools.groupby(
+        sorted(datalist, key=operator.itemgetter('category')),
+        key=operator.itemgetter('category')
+    )
+    datalist = [{'name': key, 'datalist': list(group)} for key, group in datalist if key]
+
+    total_count = await DomainSite.count({'domain': name})
+
+    return json({'datalist': datalist, 'code': 0, 'total_count': total_count})
+
+
+async def do_create_domain_site(payload):
+    name = payload['name']
+    link = payload['link']
+    desc = payload['desc']
+    domain = payload['domain']
+    image = payload['image']
+    category = payload['category']
+
+    result = await DomainSite.insert_one({
+        'name': name,
+        'link': link,
+        'desc': desc,
+        'domain': domain,
+        'category': category,
+        'image': image
+    })
+    return result
+
+
+@COMMON_API.route('/domainsite/', methods=['POST'])
+async def do_create_domainsite_api(request):
+    name = request.form.get('name', '')
+    domain = request.form.get('domain', '')
+    category = request.form.get('category', '')
+    link = request.form.get('link')
+    desc = request.form.get('desc', '')
+    image = request.form.get('image', '')
+
+    item = await DomainSite.find_one({'link': link})
+    if item:
+        return json({'message': '已创建'}) 
+    else:
+        payload = {
+            'name': name,
+            'desc': desc,
+            'link': link,
+            'category': category,
+            'domain': domain,
+            'image': image
+        }
+        await do_create_domain_site(payload)
+
+        domain = get_domain_by_url(link)
+        site = await WebSite.find_one({'domain': domain})
+        if not site:
+            await WebSite.insert_one({'name': domain, 'domain': domain})
+
+        return json({'message': '创建成功'})
