@@ -27,6 +27,7 @@
         position: relative;
     }
 
+
     .wrapper .menu {
         height: 70px;
         width: 100%;
@@ -36,8 +37,77 @@
         top: 0;
         right: 0;
         z-index: 199;
+        box-shadow: 0 1px 2px rgba(180, 195, 255, .3);
     }
 
+    .wrapper .menu_front {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #fff;
+    }
+
+    .wrapper .menu_front .container {
+        width: 1200px;
+        max-width: 100%;
+        margin: auto;
+        height: 100%;
+        position: relative;
+    }
+
+    .flex-between {
+        width: 100%;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+    }
+
+    .flex-between,
+    .flex-center {
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+
+    .wrapper .menu_front .left {
+        width: 10%;
+    }
+
+    .wrapper .menu_front .right {
+        width: 24%;
+    }
+
+    .wrapper .menu_front .middle {
+        height: 100%;
+        -webkit-box-flex: 1;
+        flex: 1;
+        position: relative;
+        display: -webkit-box;
+        display: flex;
+        /*-webkit-box-align: center;
+        align-items: center;*/
+
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+    }
+
+    .wrapper .menu_front .flex-center a {
+        font-size: 16px;
+    }
+
+    .wrapper .menu_front .flex-center img {
+        height: 46px;
+    }
+
+    .wrapper .menu_front .middle .nav-item .item {
+        color: #303659;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 22px;
+        margin-right: 4px;
+    }
     .page {
         background: #fbfbfb;
         padding: 20px 0 150px;
@@ -45,7 +115,8 @@
 
     .page .container {
         width: 980px;
-        margin: auto;
+        margin: 0 auto;
+        margin-top: 80px;
     }
 
     .page .container h1 {
@@ -156,7 +227,25 @@
 
 <body>
     <div class="wrapper">
-        <div class="menu"></div>
+        <!-- <div class="menu"></div> -->
+        <div class="menu">
+            <div class="menu_front">
+                <div class="container flex-between">
+                    <div class="flex-center left">
+                        <a href="/" title="收藏家" class="nuxt-link-active">
+                            <img src="https://imgkr.cn-bj.ufileos.com/2a4ad0a2-9402-4973-be97-537eb75b087d.png" alt="cat">
+                            <img src="https://imgkr.cn-bj.ufileos.com/1c062767-7d56-48c6-8e52-50a517b2bb45.png" alt="收藏夹" data-v-74172461=""> <img src="https://blog.cattalk.in/usr/uploads/2020/04/3094488233.jpeg" alt="收藏家" style="display:none;"></a>
+                    </div>
+                    <div class="middle">
+                        <div class="nav-item flex-center">
+                            <div class="nav-hover-wrapper flex-center">
+                                <a href="/onepage/" target="blank" class="item nuxt-link-exact-active nuxt-link-active">OnePage</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="page">
             <div class="container">
                 <h1>OnePage · 导航</h1>

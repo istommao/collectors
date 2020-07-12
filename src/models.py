@@ -36,6 +36,8 @@ class ItemImage(BaseModel):
     # path: path
     # create_at:int Unix时间戳
 
+"""OnePage block"""
+
 
 class SiteItem(BaseModel):
     __coll__ = 'SietItems'
@@ -51,3 +53,26 @@ class SiteCategory(BaseModel):
     # name:str 名称
     # image:str 封面图片
     # desc:str 内容描述
+
+
+"""Domain block 按领域划分的站点"""
+
+
+class Domain(BaseModel):
+    __coll__ = 'Domain'
+    # name:str 名称
+    # image:str 封面图片
+    # desc:str 内容描述
+
+
+class DomainSite(BaseModel):
+    """按领域划分."""
+    __coll__ = 'DomainSites'
+
+    # name:str 名称
+    # image:str 封面图片
+    # desc:str 内容描述
+    # link: 链接
+    # category:str 名称
+
+    # domain:str domain
