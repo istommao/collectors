@@ -138,3 +138,8 @@ async def domainsite_page(request):
 @App.route('/domainsite/create/')
 async def domainsite_create_page(request):
     return await file_stream('html/domainsite/create.html')
+
+
+@App.route('/about/')
+async def about_page(request):
+    return await file_stream('html/about.html')
