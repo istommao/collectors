@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>OnePage</title>
-    <link rel="shortcut icon" href="https://imgkr.cn-bj.ufileos.com/1c062767-7d56-48c6-8e52-50a517b2bb45.png" />
+    <link rel="shortcut icon" href="/static/imgs/cat1.png" />
     <style>
         body {
         background: #fbfbfb;
@@ -239,8 +239,8 @@
                 <div class="container flex-between">
                     <div class="flex-center left">
                         <a href="/" id="LogoLink" title="收藏家" class="nuxt-link-active">
-                            <img id="logoLeft" src="https://imgkr.cn-bj.ufileos.com/2a4ad0a2-9402-4973-be97-537eb75b087d.png" alt="cat">
-                            <img id="logoRight" src="https://imgkr.cn-bj.ufileos.com/1c062767-7d56-48c6-8e52-50a517b2bb45.png" alt="收藏夹" data-v-74172461=""> <img src="https://blog.cattalk.in/usr/uploads/2020/04/3094488233.jpeg" alt="收藏家" style="display:none;"></a>
+                            <img id="logoLeft" src="/static/imgs/cat2.png" alt="cat">
+                            <img id="logoRight" src="/static/imgs/cat1.png" alt="收藏夹" data-v-74172461=""> <img src="https://blog.cattalk.in/usr/uploads/2020/04/3094488233.jpeg" alt="收藏家" style="display:none;"></a>
                     </div>
                     <div class="middle">
                         <div class="nav-item flex-center">
@@ -327,8 +327,9 @@
         }
         doLoadListAPI();
 
-        var LOGOIMG1 = 'https://imgkr.cn-bj.ufileos.com/1c062767-7d56-48c6-8e52-50a517b2bb45.png';
-        var LOGOIMG2 = 'https://imgkr.cn-bj.ufileos.com/2a4ad0a2-9402-4973-be97-537eb75b087d.png';
+        var LOGOIMG1 = '/static/imgs/cat1.png';
+        var LOGOIMG2 = '/static/imgs/cat2.png';
+
 
         $('#LogoLink').mouseover(function() {
             $('#logoLeft').attr('src', LOGOIMG1);

@@ -38,13 +38,13 @@ BASE_UPLOAD_FOLDER = 'upload'
 
 @App.route('/')
 async def cards_page(request):
-    return await file_stream('html/onepage/home.html')
+    return await file_stream('html/home.html')
 
 
 
 @App.route('/old/home/')
 async def cards_page(request):
-    return await file_stream('html/index.html')
+    return await file_stream('html/backup/index.html')
 
 
 @App.route('/onepage/create/')
@@ -54,50 +54,50 @@ async def programmer_page(request):
 
 @App.route('/onepage/programmer/')
 async def programmer_page(request):
-    return await file_stream('html/programmer.html')
+    return await file_stream('html/backup/programmer.html')
 
 
 @App.route('/onepage/designer/')
 async def designer_page(request):
-    return await file_stream('html/designer.html')
+    return await file_stream('html/backup/designer.html')
 
 
 @App.route('/account/create')
 @user_authorized()
 async def index_page(request):
-    return await file_stream('html/create.html')
+    return await file_stream('html/backup/create.html')
 
 
 @App.route('/login/')
 async def tags_page(request):
-    return await file_stream('html/login.html')
+    return await file_stream('html/backup/login.html')
 
 
 @App.route('/account/tags/')
 @user_authorized()
 async def tags_page(request):
-    return await file_stream('html/tags.html')
+    return await file_stream('html/backup/tags.html')
 
 
 @App.route('/account/category/')
 @user_authorized()
 async def tags_page(request):
-    return await file_stream('html/category.html')
+    return await file_stream('html/backup/category.html')
 
 
 @App.route('/cards/detail/')
 async def card_detail_page(request):
-    return await file_stream('html/card_detail.html')
+    return await file_stream('html/backup/card_detail.html')
 
 
 @App.route('/cards/')
 async def cards_page(request):
-    return await file_stream('html/cards.html')
+    return await file_stream('html/backup/cards.html')
 
 
 @App.route('/account/list/')
 async def list_page(request):
-    return await file_stream('html/list.html')
+    return await file_stream('html/backup/list.html')
 
 
 @App.route('/onepage/')
