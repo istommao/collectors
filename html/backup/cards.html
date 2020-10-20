@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>收藏家</title>
+    <link rel="stylesheet" type="text/css" href="/static/webuploader.css" />
+    <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="/static/layui-theme.css" />
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <style type="text/css">
+    div {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    @media screen and (min-width: 980px) {
+        body .CardBox {
+            width: 260px;
+            margin: 15px;
+        }
+    }
+
+    #CardListBox {
+        width: 95%;
+        overflow: auto;
+        margin: 0 auto;
+        margin-bottom: 70px;
+    }
+
+    .CardBox {
+        box-shadow: 0 2px 3px 0 rgba(7, 17, 27, 0.1);
+        transition: .3s all linear;
+        border: 1px solid #e4ecf3;
+        border-radius: 4px;
+        background-color: #fff;
+        height: 260px;
+        float: left;
+    }
+
+    .activeBox {
+        box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+        transition: box-shadow .3s;
+    }
+
+    .CardHeader {
+        padding: 0px;
+        margin: 0;
+        height: 130px;
+        background: #DFE8FA;
+        overflow: hidden;
+    }
+
+    .CardBody {
+        padding: 0.5em;
+        height: 80px;
+        font-size: 14px;
+    }
+
+    .CardBody h2 {
+        overflow: hidden;
+        height: 40px;
+    }
+
+    .CardFooter {
+        height: 30px;
+        width: 100%;
+        padding: 0 10px;
+    }
+
+    .CardFooter a {
+        float: right;
+        margin-right: 25px;
+        color: #3BA9FF;
+    }
+
+    .CardFooter a:hover {
+        color: #1F9FFF;
+    }
+
+    .HeaderBackground {
+        color: #428CFF;
+        font-size: 28px;
+        text-align: center;
+        line-height: 120px;
+    }
+
+    .HeaderBackground img {
+        border-radius: 4px 4px 0 0;
+    }
+
+    .topBreadcrumb {
+        width: 90%;
+        margin-top: 1em;
+        margin-left: 3em;
+    }
+
+    .categoryBlock {
+        margin: 0 0 5px 0;
+    }
+
+    .footer {
+        width: 980px;
+        margin: 0 auto;
+        overflow: auto;
+    }
+
+    #PageBlock {
+        bottom: 0;
+        width: auto;
+        padding: 0 1em;
+        background-color: white;
+        box-shadow: 0 2px 3px 0 rgba(7, 17, 27, 0.1);
+        border: 1px solid #e4ecf3;
+        border-radius: 4px;
+        position: fixed;
+    }
+    </style>
+</head>
+
+<body>
+    <ul class="layui-nav" lay-filter="">
+        <li class="layui-nav-item"><a href="/">首页</a></li>
+        <li class="layui-nav-item layui-this"><a href="/cards/">收藏列表</a></li>
+        <li class="layui-nav-item"><a href="/onepage/">OnePage</a></li>
+    </ul>
+    <a href="https://github.com/istommao/collectors" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://imgkr.cn-bj.ufileos.com/a1a4889a-178f-423f-b19e-1310ce8ace99.png" alt="Fork me on GitHub">
+    </a>
+    <div class="topBreadcrumb">
+        <blockquote class="layui-elem-quote layui-quote-nm">
+            Website: <span class="breadcrumb" id="WebsiteCategoryList" lay-separator="|">
+            </span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;App: <span class="breadcrumb" id="AppCategoryList" lay-separator="|">
+            </span>
+        </blockquote>
+    </div>
+    <div id="CardListBox">
+    </div>
+    <div class="footer">
+        <div id="PageBlock"></div>
+    </div>
+    <div style="display: none;">
+        <script type="text/javascript" src="https://s4.cnzz.com/z_stat.php?id=1279042607&web_id=1279042607"></script>
+    </div>
+    <script src="https://www.layuicdn.com/layui/layui.js" charset="utf-8"></script>
+    <script>
+    function readableBytes(bytes) {
+        if (bytes == 0) {
+            return '-'
+        }
+
+        var i = Math.floor(Math.log(bytes) / Math.log(1024)),
+            sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        return (bytes / Math.pow(1024, i)).toFixed(2) * 1 + ' ' + sizes[i];
+    }
+    var basePath = location.protocol + '//' + location.host + location.pathname;
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var category = urlParams.get('category') || '';
+
+    var page = urlParams.get('page') || '1';
+    var page_size = urlParams.get('page_size') || '20';
+
+    layui.use(['layer', 'laypage'], function() {
+        var $ = layui.jquery,
+            laypage = layui.laypage,
+            element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模块;
+
+        // //监听导航点击
+        // element.on('nav(demo)', function(elem) {
+        //     //console.log(elem)
+        //     layer.msg(elem.text());
+        // });
+        var baseURL = document.location.origin;
+
+        var apiURL = '/api/items/?page_size=' + page_size + '&page=' + page + '&category=' + category;
+        $.get(apiURL, function(resp) {
+            var htmlContent = renderCardList(resp.data);
+            $('#CardListBox').html(htmlContent);
+        });
+
+        var pageAPIURL = '/api/items/pagedata/?page_size=' + page_size + '&page=' + page
+        $.get(pageAPIURL, function(resp) {
+            var pagedata = resp.data;
+
+            //完整功能
+            laypage.render({
+                elem: 'PageBlock',
+                count: pagedata.total,
+                curr: pagedata.page,
+                limit: pagedata.page_size,
+                layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip'],
+                jump: function(obj, first) {
+                    var url = basePath + '?page_size=' + obj.limit + '&page=' + obj.curr
+                    if (!first) {
+                        window.location.href = url;
+                    }
+                }
+            });
+
+        });
+
+        $('#CardListBox').on({
+            mouseenter: function() {
+                $(this).addClass('activeBox');
+            },
+            mouseleave: function() {
+                $(this).removeClass('activeBox');
+            }
+        }, ".CardBox");
+
+        function renderCategoryList() {
+            $.ajax({
+                url: baseURL + '/api/category/',
+                type: 'get',
+                success: function(resp) {
+                    $.each(resp.data, function(key, obj) {
+                        var url = basePath + '?category=' + obj.name;
+                        var html = '<a href="' + url + '"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
+                        if (obj.attribute == 'website') {
+                            $('#WebsiteCategoryList').append(html);
+                        } else if (obj.attribute == 'app') {
+                            $('#AppCategoryList').append(html);
+                        }
+                    });
+                }
+            });
+        }
+        renderCategoryList();
+
+        // function renderTagList() {
+        //     $.ajax({
+        //         url: baseURL + '/api/tags/',
+        //         type: 'get',
+        //         success: function(resp) {
+        //             $.each(resp.data, function(key, obj) {
+        //                 var html = '<a href="#"><span class="layui-badge layui-bg-blue">' + obj.name + '</span></a>&nbsp;&nbsp;'
+        //                 if (obj.attribute == 'website') {
+        //                     $('#WebsiteTagList').append(html);
+        //                 } else if (obj.attribute == 'app') {
+        //                     $('#AppTagList').append(html);
+        //                 }
+        //             })
+
+        //         }
+        //     })
+        // }
+        // renderTagList();
+
+        function renderCardList(dataset) {
+            var htmlContent = '';
+            var defaultImage = 'https://imgkr.cn-bj.ufileos.com/f316df73-7519-4334-a2ce-68162638b833.jpg'
+
+            $.each(dataset, function(key, val) {
+                var obj = dataset[key];
+
+                var header = '';
+                // https://imgkr.cn-bj.ufileos.com/ad12c5a7-6dbd-4305-950d-ab85ec3eed16.jpg
+                var bgImage = defaultImage;
+                if (obj.image) {
+                    bgImage = obj.image;
+                }
+
+                header = '<div class="HeaderBackground"><img width="100%" height="160px" src="' + bgImage + '" /></div>'
+
+                var tagList = '';
+                $.each(obj.tags, function(key, value) {
+                    tagList += '<span class="layui-badge layui-bg-blue">' + value + '</span>&nbsp;'
+                });
+
+                var categoryList = '<div class="categoryBlock"><span class="layui-badge-rim">' + obj.category + '</span></div>';
+
+                var item = '<div>' +
+                    '<div class="CardBox">' +
+                    '<div class="CardHeader">' + header + '</div>' +
+                    '<div class="CardBody">' + categoryList + '<h2>' + obj.name + '</h2><br>' +
+                    '</div>' +
+                    '<div class="CardFooter">' + tagList +
+                    '<a href="' + obj.url + '" target="_blank">查看</a></div>' +
+                    '</div></div>'
+
+                htmlContent += item;
+            });
+
+            return htmlContent;
+        }
+
+    });
+    </script>
+</body>
+
+</html>
