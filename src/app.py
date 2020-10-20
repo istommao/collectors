@@ -11,7 +11,7 @@ from src.bps import COMMON_API
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-MONGODB_URI = os.environ.get('MONGODB_HOST', 'mongodb://127.0.01:27017/collectors')
+MONGODB_URI = os.environ.get('MONGODB_HOST', 'mongodb://127.0.0.1:27017/collectors')
 BASE_URL = 'http://127.0.0.1:7000'
 
 
