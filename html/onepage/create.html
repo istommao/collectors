@@ -1,27 +1,251 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hans">
 
 <head>
     <meta charset="UTF-8">
-    <title>OnePage · 导航</title>
+    <title>收藏家</title>
+    <link rel="shortcut icon" href="/static/imgs/cat1.png" />
     <link rel="stylesheet" href="https://www.layuicdn.com/layui/css/layui.css" media="all">
     <link rel="stylesheet" type="text/css" href="/static/layui-theme.css" />
     <style>
         body {
-        background: #fbfbfb;     
+        background: #fbfbfb;
     }
-    #wrapper {
+
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, Source Sans Pro, BlinkMacSystemFont, PingFang SC, Helvetica, Tahoma, Arial, Hiragino Sans GB, Microsoft YaHei, "\5FAE\8F6F\96C5\9ED1", sans-serif;
+        font-size: 14px;
+        font-weight: 400;
+        color: #303659;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+        width: 100%;
         min-width: 1200px;
         min-height: 100vh;
         position: relative;
-        margin: 30px auto;
-    }
-    #wrapper h1 {
-        text-align: center;
-        font-size: 24px;
     }
 
-    #container {
+    .wrapper .menu {
+        height: 70px;
+        width: 100%;
+        margin: 0 auto;
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        z-index: 199;
+        box-shadow: 0 1px 2px rgba(180, 195, 255, .3);
+    }
+
+    .wrapper .menu_front {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #fff;
+    }
+
+    .wrapper .menu_front .container {
+        width: 1200px;
+        max-width: 100%;
+        margin: auto;
+        height: 100%;
+        position: relative;
+    }
+
+    .flex-between {
+        width: 100%;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+    }
+
+    .flex-between,
+    .flex-center {
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+    }
+
+    .wrapper .menu_front .left {
+        width: 10%;
+    }
+
+    .wrapper .menu_front .right {
+        width: 24%;
+    }
+
+    .wrapper .menu_front .middle {
+        height: 100%;
+        -webkit-box-flex: 1;
+        flex: 1;
+        position: relative;
+        display: -webkit-box;
+        display: flex;
+        /*-webkit-box-align: center;
+        align-items: center;*/
+
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+    }
+
+    .page {
+        background: #fbfbfb;
+        padding: 20px 0 150px;
+    }
+
+    .page .container {
+        /*width: 980px;*/
+        margin: 0 auto;
+        margin-top: 80px;
+        width: 710px;
+        background: #fff;
+        /*margin: 30px auto;*/
+        box-shadow: 0 1px 5px rgba(180, 195, 255, .3);
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        align-items: center;
+        padding: 15px 10px;
+        margin-bottom: 20px;
+        border-radius: 2px;
+    }
+
+    .page .container h1 {
+        font-size: 30px;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .page .container .description {
+        text-align: center;
+    }
+
+    .page .container .sector {
+        /*margin: 20px 0;*/
+    }
+
+    .page .container h2 {
+        font-size: 16px;
+        text-align: left;
+        margin: 10px 0 20px;
+        /*padding-top: 20px;*/
+        font-weight: 700;
+    }
+
+    .page .container .links {
+        display: -webkit-box;
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-box-pack: justify;
+        justify-content: space-between;
+    }
+
+    .page .container .links .link {
+        width: 310px;
+        background: #fff;
+        display: -webkit-box;
+        display: flex;
+        box-shadow: 0 1px 5px rgba(180, 195, 255, .3);
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+        -webkit-box-align: center;
+        align-items: center;
+        padding: 15px 10px;
+        margin-bottom: 20px;
+        border-radius: 2px;
+        cursor: pointer;
+        border: 1px solid transparent;
+    }
+
+    .page .container .links .link img {
+        width: 30px;
+        height: 30px;
+        -o-object-fit: contain;
+        object-fit: contain;
+        margin-right: 10px;
+        -webkit-transition: all .2s ease;
+        transition: all .2s ease;
+    }
+
+    .page .container .links .link .info {
+        width: 230px;
+    }
+
+    .page .container .links a:hover {
+        border: 1px solid #20A0FF;
+    }
+
+    .page .container h3 {
+        font-size: 14px;
+    }
+
+    .page .container .links .link .info p {
+        font-size: 12px;
+        color: #888ea2;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        width: 100%;
+        display: block;
+        text-align: left;
+        line-height: 1.8;
+    }
+
+    a {
+        cursor: pointer;
+        outline: none;
+        display: -webkit-box;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+    }
+
+    .page .container .links:after {
+        content: "";
+        width: 310px;
+        display: block;
+        height: 0;
+    }
+
+    a,
+    a:hover,
+    a:visited {
+        text-decoration: none;
+    }
+
+    .activeBox {
+        border: 1px solid #20A0FF;
+    }
+
+    .wrapper .menu_front .flex-center a {
+        font-size: 16px;
+    }
+
+    .wrapper .menu_front .flex-center img {
+        height: 46px;
+    }
+
+    .wrapper .menu_front .middle .nav-item .item {
+        color: #303659;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 22px;
+        margin-right: 4px;
+        width: 80px;
+    }
+
+    .wrapper .menu_front .middle .nav-item a:hover {
+        color: #20A0FF;
+    }
+    .container {
         width: 710px;
         background: #fff;
         margin: 30px auto;
@@ -41,56 +265,82 @@
 </head>
 
 <body>
-    <div id="wrapper">
-        <h1>OnePage · 导航</h1>
-        <div id="container">
-            <div style="margin-top:30px;"></div>
-            <form class="layui-form" action="" id="createForm">
-                <div class="layui-form-item">
-                    <label class="layui-form-label">名称</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="formName" name="name" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+    <div class="wrapper">
+        <div class="menu">
+            <div class="menu_front">
+                <div class="container flex-between">
+                    <div class="flex-center left">
+                        <a id="LogoLink" href="/" title="收藏家" class="nuxt-link-active">
+                            <img id="logoLeft" src="/static/imgs/cat2.png" alt="cat">
+                            <img id="logoRight" src="/static/imgs/cat1.png" alt="收藏夹" data-v-74172461=""> <img src="https://blog.cattalk.in/usr/uploads/2020/04/3094488233.jpeg" alt="收藏家" style="display:none;"></a>
                     </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">分类</label>
-                    <div class="layui-input-block" id="formCategory">
-                        <!-- <input type="text" id="formCategory" name="category" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input"> -->
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">网址</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="formLink" name="link" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">简介</label>
-                    <div class="layui-input-block">
-                        <input type="text" id="formIntro" name="desc" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">图标</label>
-                    <div class="layui-input-block">
-                        <div class="layui-upload-drag" id="ItemImage">
-                            <i class="layui-icon"></i>
-                            <p>点击上传，或将文件拖拽到此处</p>
-                            <div class="layui-hide" id="uploadDemoView">
-                                <hr>
-                                <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                    <div class="middle">
+                        <div class="nav-item flex-center">
+                            <div class="nav-hover-wrapper flex-center">
+                                <a href="/" class="item nuxt-link-exact-active nuxt-link-active">Home</a>
+                                <a href="/domainsite/create/">DomainSite</a>
+                                <a href="/onepage/create/" class="item nuxt-link-exact-active nuxt-link-active">OnePage</a>
+                                <a href="/onepage/category/" class="item nuxt-link-exact-active nuxt-link-active">category</a>
                             </div>
-                            <input type="hidden" name="image" id="imageLogo">
                         </div>
                     </div>
                 </div>
-                <div class="layui-form-item">
-                    <div class="layui-input-block">
-                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="createForm">创建</button>
-                    </div>
-                </div>
-            </form>
+            </div>
         </div>
+        <div class="page">
+            <div class="container">
+                <h1>OnePage · 导航</h1>
+                <div style="margin-top:30px;"></div>
+                <form class="layui-form" action="" id="createForm">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">名称</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="formName" name="name" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">分类</label>
+                        <div class="layui-input-block" id="formCategory">
+                            <input type="text" id="formCategory" name="category" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">网址</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="formLink" name="link" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">简介</label>
+                        <div class="layui-input-block">
+                            <input type="text" id="formIntro" name="desc" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图标</label>
+                        <div class="layui-input-block">
+                            <div class="layui-upload-drag" id="ItemImage">
+                                <i class="layui-icon"></i>
+                                <p>点击上传，或将文件拖拽到此处</p>
+                                <div class="layui-hide" id="uploadDemoView">
+                                    <hr>
+                                    <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                </div>
+                                <input type="hidden" name="image" id="imageLogo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="createForm">创建</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div style="display: none;">
+        <script type="text/javascript" src="https://s4.cnzz.com/z_stat.php?id=1279042607&web_id=1279042607"></script>
     </div>
     <script src="https://www.layuicdn.com/layui/layui.js" charset="utf-8"></script>
     <script>
@@ -103,70 +353,18 @@
 
         var baseURL = document.location.origin;
 
-        //拖拽上传
-        upload.render({
-            elem: '#ItemImage',
-            url: '/api/upload/',
-            done: function(res) {
-                layer.msg('上传成功');
-                layui.$('#uploadDemoView').removeClass('layui-hide').find('img').attr('src', res.url);
-                $('#imageLogo').val(res.url);
-            }
-        });
+        var LOGOIMG1 = '/static/imgs/cat1.png';
+        var LOGOIMG2 = '/static/imgs/cat2.png';
 
-        //监听提交
-        form.on('submit(createForm)', function(data) {
-            var formData = data.field;
-            if (formData.content == '') {
-                layer.msg('请输入内容');
-                $('#formContent').focus();
-                return false;
-            }
+        $('#LogoLink').mouseover(function() {
+            $('#logoLeft').attr('src', LOGOIMG1);
+            $('#logoRight').attr('src', LOGOIMG2);
+        })
+        $('#LogoLink').mouseout(function() {
+            $('#logoLeft').attr('src', LOGOIMG2);
+            $('#logoRight').attr('src', LOGOIMG1);
+        })
 
-            doCreate(formData)
-
-            return false;
-        });
-
-        function doRenderCategoryList() {
-            $.ajax({
-                url: baseURL + '/api/onepage/category/',
-                type: 'get',
-                success: function(resp) {
-                    $.each(resp.datalist, function(key, obj) {
-                        var html = '<input type="radio" name="category" value="' + obj.name + '" title="' + obj.name + '">'
-                        $('#formCategory').append(html);
-
-                    });
-                    form.render();
-                }
-            });
-        }
-        doRenderCategoryList();
-
-        function doCreate(data) {
-            var form = $('#createForm');
-
-            $.ajax({
-                url: baseURL + '/api/onepage/',
-                type: 'post',
-                data: form.serialize(),
-                async: false,
-                success: function(resp) {
-                    if (resp.Status == 0) {
-                        layer.alert(resp.message, { icon: 5 })
-                    } else {
-                        layer.alert(resp.message, { icon: 1 })
-
-                    }
-
-                    setTimeout(function() {
-                        window.location.href = baseURL + '/onepage/create/';
-                    }, 1500);
-
-                }
-            })
-        }
     });
     </script>
 </body>
