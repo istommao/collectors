@@ -359,18 +359,54 @@
 
         var baseURL = document.location.origin;
 
-        var LOGOIMG1 = '/static/imgs/cat1.png';
-        var LOGOIMG2 = '/static/imgs/cat2.png';
+        //拖拽上传
+        upload.render({
+            elem: '#ItemImage',
+            url: '/api/upload/',
+            done: function(res) {
+                layer.msg('上传成功');
+                layui.$('#uploadDemoView').removeClass('layui-hide').find('img').attr('src', res.url);
+                $('#imageLogo').val(res.url);
+            }
+        });
 
-        $('#LogoLink').mouseover(function() {
-            $('#logoLeft').attr('src', LOGOIMG1);
-            $('#logoRight').attr('src', LOGOIMG2);
-        })
-        $('#LogoLink').mouseout(function() {
-            $('#logoLeft').attr('src', LOGOIMG2);
-            $('#logoRight').attr('src', LOGOIMG1);
-        })
+        //监听提交
+        form.on('submit(createForm)', function(data) {
+            var formData = data.field;
+            if (formData.content == '') {
+                layer.msg('请输入内容');
+                $('#formContent').focus();
+                return false;
+            }
 
+            doCreate(formData)
+
+            return false;
+        });
+
+        function doCreate(data) {
+            var form = $('#createForm');
+
+            $.ajax({
+                url: baseURL + '/api/domainsite/',
+                type: 'post',
+                data: form.serialize(),
+                async: false,
+                success: function(resp) {
+                    if (resp.Status == 0) {
+                        layer.alert(resp.message, { icon: 5 })
+                    } else {
+                        layer.alert(resp.message, { icon: 1 })
+
+                    }
+
+                    setTimeout(function() {
+                        window.location.href = baseURL + '/domainsite/create/';
+                    }, 1500);
+
+                }
+            })
+        }
     });
     </script>
 </body>
