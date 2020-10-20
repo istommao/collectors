@@ -292,17 +292,11 @@
             <div class="container">
                 <h1>OnePage · 导航</h1>
                 <div style="margin-top:30px;"></div>
-                <form class="layui-form" action="" id="createForm">
+                <form class="layui-form" action="" id="updateFOrm">
                     <div class="layui-form-item">
                         <label class="layui-form-label">名称</label>
                         <div class="layui-input-block">
                             <input type="text" id="formName" name="name" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
-                        </div>
-                    </div>
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">领域</label>
-                        <div class="layui-input-block">
-                            <input type="text" id="formName" name="domain" autofocus="true" lay-verify="title" autocomplete="off" placeholder="" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -339,7 +333,7 @@
                     </div>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="createForm">创建</button>
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="updateFOrm">更新</button>
                         </div>
                     </div>
                 </form>
@@ -358,7 +352,10 @@
             upload = layui.upload,
             $ = layui.jquery;
 
+        var urlParams = new URLSearchParams(window.location.search);
+
         var baseURL = document.location.origin;
+        var SITE_ITEM_UID = urlParams.get('uid') || 'null';
 
         //拖拽上传
         upload.render({
@@ -372,7 +369,7 @@
         });
 
         //监听提交
-        form.on('submit(createForm)', function(data) {
+        form.on('submit(updateFOrm)', function(data) {
             var formData = data.field;
             if (formData.content == '') {
                 layer.msg('请输入内容');
@@ -380,16 +377,34 @@
                 return false;
             }
 
-            doCreate(formData)
+            doUpdate(formData)
 
             return false;
         });
 
-        function doCreate(data) {
-            var form = $('#createForm');
+        function loadItemData() {
+            $.ajax({
+                url: baseURL + '/api/siteitems/detail/?uid=' + SITE_ITEM_UID,
+                type: 'get',
+                success: function(resp) {
+                    doRenderItemData(resp.data)
+                }
+            })
+        }
+        loadItemData();
+
+        function doRenderItemData(data) {
+            $('#formName').val(data.name);
+            $('#formLink').val(data.link);
+            $('#formIntro').val(data.desc);
+            $('#formCategory').val(data.category);
+        }
+
+        function doUpdate(data) {
+            var form = $('#updateFOrm');
 
             $.ajax({
-                url: baseURL + '/api/domainsite/',
+                url: baseURL + '/api/siteitems/update/?uid=' + SITE_ITEM_UID,
                 type: 'post',
                 data: form.serialize(),
                 async: false,
@@ -402,7 +417,7 @@
                     }
 
                     setTimeout(function() {
-                        window.location.href = baseURL + '/domainsite/create/';
+                        window.location.href = baseURL + '/xman/onepage/list/';
                     }, 1500);
 
                 }

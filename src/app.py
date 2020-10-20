@@ -47,56 +47,76 @@ async def cards_page(request):
     return await file_stream('html/backup/index.html')
 
 
-@App.route('/onepage/create/')
-async def programmer_page(request):
+@App.route('/xman/onepage/list/')
+async def onepage_list_page(request):
+    return await file_stream('html/onepage/list.html')
+
+
+@App.route('/xman/onepage/create/')
+async def onepage_create_page(request):
     return await file_stream('html/onepage/create.html')
 
 
-@App.route('/onepage/programmer/')
-async def programmer_page(request):
+
+@App.route('/xman/onepage/edit/detail/')
+async def onepage_edit_detail_page(request):
+    return await file_stream('html/onepage/edit_detail.html')
+
+
+@App.route('/xman/onepage/programmer/')
+async def onepage_programmer_page(request):
     return await file_stream('html/backup/programmer.html')
 
 
-@App.route('/onepage/designer/')
-async def designer_page(request):
+@App.route('/xman/onepage/designer/')
+async def onepage_designer_page(request):
     return await file_stream('html/backup/designer.html')
 
 
-@App.route('/account/create')
+@App.route('/xman/account/create')
 @user_authorized()
-async def index_page(request):
+async def account_create_page(request):
     return await file_stream('html/backup/create.html')
 
 
-@App.route('/login/')
-async def tags_page(request):
+@App.route('/xman/onepage/category/')
+async def onepage_category_page(request):
+    return await file_stream('html/onepage/category.html')
+
+@App.route('/xman/')
+async def xman_index(request):
+    return await file_stream('html/xman_index.html')
+
+
+@App.route('/xman/login/')
+async def login_page(request):
     return await file_stream('html/backup/login.html')
 
 
-@App.route('/account/tags/')
+@App.route('/xman/account/tags/')
 @user_authorized()
-async def tags_page(request):
+async def account_tags_page(request):
     return await file_stream('html/backup/tags.html')
 
 
-@App.route('/account/category/')
+@App.route('/xman/account/category/')
 @user_authorized()
-async def tags_page(request):
+async def account_category_page(request):
     return await file_stream('html/backup/category.html')
 
 
-@App.route('/cards/detail/')
+@App.route('/xman/cards/detail/')
 async def card_detail_page(request):
     return await file_stream('html/backup/card_detail.html')
 
 
-@App.route('/cards/')
+@App.route('/xman/cards/')
 async def cards_page(request):
     return await file_stream('html/backup/cards.html')
 
 
-@App.route('/account/list/')
-async def list_page(request):
+@App.route('/xman/account/list/')
+async def account_list_page(request):
     return await file_stream('html/backup/list.html')
 
 
@@ -120,11 +140,6 @@ async def onepage_edit_page(request):
     return await file_stream('html/onepage/edit.html')
 
 
-@App.route('/onepage/category/')
-async def onepage_category_page(request):
-    return await file_stream('html/onepage/category.html')
-
-
 @App.route('/onepage/detail/')
 async def onepage_detail_page(request):
     return await file_stream('html/onepage/detail.html')
@@ -135,7 +150,7 @@ async def domainsite_page(request):
     return await file_stream('html/domainsite/index.html')
 
 
-@App.route('/domainsite/create/')
+@App.route('/xman/domainsite/create/')
 async def domainsite_create_page(request):
     return await file_stream('html/domainsite/create.html')
 

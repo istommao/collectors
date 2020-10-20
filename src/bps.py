@@ -363,6 +363,81 @@ async def do_create_siteitem(payload):
     return result
 
 
+@COMMON_API.route('/siteitems/detail/', methods=['GET'])
+async def get_siteitems_detail_api(request):
+    uid = request.args.get('uid', '')
+
+    obj = await SiteItem.find_one({'_id': ObjectId(uid)})
+    if not obj:
+        return json({'code': -1})
+
+    data = {
+        'uid': str(obj['_id']),
+        'name': obj['name'],
+        'link': obj['link'],
+        'category': obj['category'],
+        'image': obj['image'],
+        'desc': obj['desc'],
+    }
+
+    return json({'data': data})
+
+
+@COMMON_API.route('/siteitems/', methods=['GET'])
+async def get_siteitems_list_api(request):
+ 
+    qs = await SiteItem.find({})
+    datalist = []
+
+    for obj in qs.objects:
+        item = {
+            'uid': str(obj['_id']),
+            'name': obj['name'],
+            'link': obj['link'],
+            'category': obj['category'],
+            'image': obj['image'],
+            'desc': obj['desc'],
+        }
+        datalist.append(item)
+
+    total_count = await SiteItem.count({})
+    total_category = await SiteCategory.count({})
+
+    return json({'data': datalist, 'code': 0,
+                 'total_count': total_count, 'total_category': total_category})
+
+
+@COMMON_API.route('/siteitems/update/', methods=['POST'])
+async def get_siteitems_list_api(request):
+    uid = request.args.get('uid', '')
+
+    obj = await SiteItem.find_one({'_id': ObjectId(uid)})
+
+    if not obj:
+        return json({'code': -1})
+
+    name = request.form.get('name', '')
+    category = request.form.get('category', '')
+    link = request.form.get('link')
+    desc = request.form.get('desc', '')
+    image = request.form.get('image', '')
+
+    payload = {}
+    if image:
+        payload['image'] = image
+    if category:
+        payload['category'] = category
+    if name:
+        payload['name'] = name
+
+    if link:
+        payload['link'] = link
+
+    await SiteItem.update_one({'_id': ObjectId(uid)}, {'$set': payload})
+
+    return json({'code': 0, 'message': '更新成功'})
+
+
 @COMMON_API.route('/onepage/', methods=['GET'])
 async def get_onepage_list_api(request):
     category = request.args.get('category', '')
